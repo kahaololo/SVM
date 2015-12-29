@@ -19,24 +19,12 @@ class CPU {
 		IE = 11;
 	}
 
-	public int CP() {
-		return CP;
-	}
-	public int OP() {
-		return OP;
-	}
-	public int DP() {
-		return DP;
-	}
-	public int RP() {
-		return RP;
-	}
-	public int SP() {
-		return SP;
-	}
-	public int IE() {
-		return IE;
-	}
+	public int CP() { return CP; }
+	public int OP() { return OP; }
+	public int DP() { return DP; }
+	public int RP() { return RP; }
+	public int SP() { return SP; }
+	public int IE() { return IE; }
 
 
 	public static void main(String[] args) {
