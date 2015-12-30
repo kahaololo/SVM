@@ -9,8 +9,8 @@ class SVM {
 	private Debugger debugger;
 
 	public SVM() {
-		cpu = new CPU();
 		ram = new RAM();
+		cpu = new CPU(ram);
 	}
 
 	public CPU CPU() { return cpu; }
