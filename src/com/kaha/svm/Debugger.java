@@ -8,6 +8,8 @@ class Debugger {
 
 	private CPU cpu;
 	private RAM ram;
+	private OPCODE oc;
+
 	private Scanner in;
 
 	private boolean exit = false;
@@ -62,7 +64,8 @@ class Debugger {
 	private void read(String[] args) {
 		for (String arg : args) {
 			// match each mnemonic opcode
-			cpu.loadCode(Integer.parseInt(arg));
+			// System.out.println(OPCODE.instructionCode.get("READ"));
+			cpu.loadCode(OPCODE.instructionCode.get(arg));
 		}
 	}
 
