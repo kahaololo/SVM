@@ -1,4 +1,4 @@
-<project name="SVM" default="compile" basedir=".">
+<project name="SVM" default="make.jar" basedir=".">
 
     <property file="build.properties" />
 
@@ -7,13 +7,29 @@
     </target>
 
     <target name="compile" depends="make.dirs">
-
         <javac sourcepath="${project.src.dir}" destdir="${build.dir}">
             <src path="${project.src.dir}"/>
         </javac>
-
     </target>
 
+    <target name="make.dist.dirs" description="Make dirs for distribution">
+        <mkdir dir="${dist.dir}/${dist.name}"/>
+        <!-- <mkdir dir="${dist.dir}/${dist.name}/${dist.lib.dir}"/> -->
+    </target>
 
+    <target name="make.jar" description="Make jar file" depends="compile,make.dist.dirs">
+
+        <jar destfile="${dist.dir}/${dist.name}/${build.jar.name}">                                  
+            <manifest>
+                <attribute name="Built-By" value="kaha"/>
+                <attribute name="Main-Class" value="${build.jar.mainclass}"/>
+            </manifest>
+             
+            <fileset dir="${build.dir}">
+                <include name="**/*.class"/>
+            </fileset>  
+        </jar>  
+
+    </target>
 
 </project>
