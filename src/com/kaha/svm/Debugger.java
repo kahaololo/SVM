@@ -20,17 +20,21 @@ class Debugger {
 		this.ram = ram;
 		// reader = new Scanner(System.in);
 
+		cpu.setCP(0xEEEEEEEE);
+		cpu.loadCode(0xEEEEEEEE);
+
+
 		System.out.println("** Welcome to Simple Virtual Machine **");
 		System.out.println("** SVM is in the Debug Mode **\n");
 	}
 
 	private void dump() {
-		System.out.printf("CP: 0x%08x\n", cpu.CP());
-		System.out.printf("OP: 0x%08x\tDP: 0x%08x\n", cpu.OP(), cpu.DP());
-		System.out.printf("RP: 0x%08x\tSP: 0x%08x\n", cpu.RP(), cpu.SP());
-		System.out.printf("IE: 0%010d\n", cpu.IE());
+		System.out.printf("CP: 0x%08x\n", cpu.getCP());
+		System.out.printf("OP: 0x%08x\tDP: 0x%08x\n", cpu.getOP(), cpu.getDP());
+		System.out.printf("RP: 0x%08x\tSP: 0x%08x\n", cpu.getRP(), cpu.getSP());
+		System.out.printf("IE: 0%010d\n", cpu.getIE());
 
-		int[] data = ram.Data();
+		int[] data = ram.getData();
 
 		for (int i = 0; i < data.length; i++) {
 			if (i % 8 == 0)
@@ -64,16 +68,15 @@ class Debugger {
 	private void read(String[] args) {
 		for (String arg : args) {
 			// match each mnemonic opcode
-			// System.out.println(OPCODE.instructionCode.get("READ"));
 			cpu.loadCode(OPCODE.instructionCode.get(arg));
 		}
 	}
 
-	private void cp(int value) { cpu.CP(value); }
-	private void op(int value) { cpu.OP(value); }
-	private void dp(int value) { cpu.DP(value); }
-	private void rp(int value) { cpu.RP(value); }
-	private void sp(int value) { cpu.SP(value); }
+	private void setCP(int value) { cpu.setCP(value); }
+	private void setOP(int value) { cpu.setOP(value); }
+	private void setDP(int value) { cpu.setDP(value); }
+	private void setRP(int value) { cpu.setRP(value); }
+	private void setSP(int value) { cpu.setSP(value); }
 
 
 	// main method
@@ -101,15 +104,15 @@ class Debugger {
 				break;
 			case "exit": exit();
 				break;
-			case "cp": cp(Integer.parseInt(args[0]));
+			case "cp": setCP(Integer.parseInt(args[0]));
 				break;
-			case "op": op(Integer.parseInt(args[0]));
+			case "op": setOP(Integer.parseInt(args[0]));
 				break;
-			case "dp": dp(Integer.parseInt(args[0]));
+			case "dp": setDP(Integer.parseInt(args[0]));
 				break;
-			case "rp": rp(Integer.parseInt(args[0]));
+			case "rp": setRP(Integer.parseInt(args[0]));
 				break;
-			case "sp": sp(Integer.parseInt(args[0]));
+			case "sp": setSP(Integer.parseInt(args[0]));
 				break;
 			default: help();
 				break;

@@ -13,8 +13,8 @@ class SVM {
 		cpu = new CPU(ram);
 	}
 
-	public CPU CPU() { return cpu; }
-	public RAM RAM() { return ram; }
+	public CPU getCPU() { return cpu; }
+	public RAM getRAM() { return ram; }
 
 	public void debug() {
 		debugger = new Debugger(cpu, ram);

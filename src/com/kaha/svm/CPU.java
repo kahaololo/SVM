@@ -4,12 +4,12 @@ import com.kaha.svm.RAM;
 
 class CPU {
 	// Registers
-	private int CP  // next opcode
-	   ,OP  // end of Code Segment
-	   ,DP  // end of Data Segment
-	   ,RP  // top of the Return Stack
-	   ,SP  // top of the Data Stack
-	   ,IE; // instruction counter
+	private int cp; // next opcode
+	private int op;  // end of Code Segment
+	private int dp;  // end of Data Segment
+	private int rp;  // top of the Return Stack
+	private int sp;  // top of the Data Stack
+	private int ie; // instruction counter
 
 	private RAM ram;
 
@@ -17,27 +17,27 @@ class CPU {
 		this.ram = ram;
 	}
 
-	public int CP() { return CP; }
-	public void CP(int value) { CP = value; }
+	public int getCP() { return cp; }
+	public void setCP(int value) { cp = value; }
 	
-	public int OP() { return OP; }
-	public void OP (int value) { OP = value; }
+	public int getOP() { return op; }
+	public void setOP (int value) { op = value; }
 	public void loadCode (int opcode) {
-		ram.data[OP] = opcode;
-		OP = ++OP;
-		IE = ++IE;
+		ram.data[op] = opcode;
+		++op;
+		++ie;
 	}
 
-	public int DP() { return DP; }
-	public void DP(int value) { DP = value; }
+	public int getDP() { return dp; }
+	public void setDP(int value) { dp = value; }
 
-	public int RP() { return RP; }
-	public void RP(int value) { RP = value; }
+	public int getRP() { return rp; }
+	public void setRP(int value) { rp = value; }
 
-	public int SP() { return SP; }
-	public void SP(int value) { SP = value; }
+	public int getSP() { return sp; }
+	public void setSP(int value) { sp = value; }
 
-	public int IE() { return IE; }
+	public int getIE() { return ie; }
 
 	public static void main(String[] args) {
 		// CPU cpu = new CPU();

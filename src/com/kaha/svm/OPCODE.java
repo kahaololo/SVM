@@ -4,8 +4,6 @@ import java.util.*;
 // import java.util.HashMap;
 
 class OPCODE {
-
-
 	static final Map<String, Integer> instructionCode;
     
     static {

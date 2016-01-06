@@ -8,11 +8,7 @@ class RAM {
 
 	public RAM () { data = new int[SIZE]; }
 
-	public int Length() {
-		return data.length;
-	}
-
-	public int[] Data() {
+	public int[] getData() {
 		return data;
 	}
 
