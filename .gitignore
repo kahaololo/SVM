@@ -1,9 +1,9 @@
 
+bin/
+
 *.tmp
 *.bak
-*.swp
 *.class
 *.jar
 
-
-*.class
+.gitignore
