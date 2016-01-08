@@ -17,8 +17,9 @@ class SVM {
 	public RAM getRAM() { return ram; }
 
 	public void debug() {
-		debugger = new Debugger(cpu, ram);
-		debugger.start();
+		cpu.loadCode(0xEEEEEEEE);
+		cpu.execute();
+		// cpu.debug();
 	}
 
 
