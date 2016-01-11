@@ -19,7 +19,6 @@ class SVM {
 	public void debug() {
 		cpu.loadCode(0xEEEEEEEE);
 		cpu.execute();
-		// cpu.debug();
 	}
 
 

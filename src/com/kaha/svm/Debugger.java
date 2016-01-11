@@ -12,7 +12,6 @@ class Debugger {
 
     private Scanner in;
 
-    private boolean exit = false;
     // private Scanner reader;
 
     public Debugger(CPU cpu, RAM ram) {
@@ -60,7 +59,7 @@ class Debugger {
         System.out.println("exit                    - stop SVM and exit\n");
     }
 
-    private void exit() { exit = true; }
+    private void exit() { cpu.halt(); }
 
     private void restart() {
         cpu.execute();
@@ -129,14 +128,9 @@ class Debugger {
                 break;
         }
 
-        // exit if got exit command
-        if (exit) { return; }
-        
         // recursive call
         start();
     }
-
-    
 
 
     private void prompt() {
