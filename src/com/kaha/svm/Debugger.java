@@ -45,8 +45,9 @@ class Debugger {
 
     private void help() {
         System.out.println("Possible commands are:");
-        // System.out.println("start    - restartx execution cycle from current CP position");
+        System.out.println("start                   - restartx execution cycle from current CP position");
         System.out.println("restart                 - restart execution cycle from the 0x00 position");
+        System.out.println("step                    - execute single instruction execution cycle");
         System.out.println("dump                    - CPU and RAM dump");
         System.out.println("read ..                 - read values/mnemonics from console to memory starting from OP");
         System.out.println("erase [shift] [length]  - assigns new value to CP register");
@@ -54,16 +55,30 @@ class Debugger {
         System.out.println("op [xx]                 - assigns new value to OP register");
         System.out.println("dp [xx]                 - assigns new value to DP register");
         System.out.println("rp [xx]                 - assigns new value to RP register");
-        System.out.println("sp [xx]                 - assigns new value to SP register");
+        System.out.println("sp [xx]                 - oassigns new value to SP register");
         System.out.println("help                    - display this message");
         System.out.println("exit                    - stop SVM and exit\n");
     }
 
-    private void exit() { cpu.halt(); }
+    private void exit() { 
+        int cp = cpu.loadCode(OPCODE.instructionCode.get("HALT"));
+        cpu.setCP(cp);
+        cpu.executeSingleOp();
+    }
 
     private void restart() {
         cpu.flushRAM();
+        cpu.setCP(0x00);
         cpu.execute();
+    }
+
+    private void start() {
+        // cpu.flushRAM();
+        cpu.execute();
+    }
+
+    private void step() {
+        cpu.executeSingleOp();
     }
 
     private void read(String[] args) {
@@ -87,7 +102,7 @@ class Debugger {
 
 
     // main method
-    public void start() {
+    public void execute() {
         in = new Scanner(System.in);
         in.useDelimiter("\r\n");
         // chow prompt
@@ -103,7 +118,11 @@ class Debugger {
 
         // parse and execute command with args (if they exists)
         switch (command) {
+            case "start": start();
+                break;
             case "restart": restart();
+                break;
+            case "step": step();
                 break;
             case "read": read(args);
                 break;
@@ -130,7 +149,7 @@ class Debugger {
         }
 
         // recursive call
-        start();
+        execute();
     }
 
 

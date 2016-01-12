@@ -130,10 +130,11 @@ public class CPU {
 
     public int getIE() { return ie; }
 
-    public void loadCode (int opcode) {
+    public int loadCode (int opcode) {
         ram.data[op] = opcode;
-        ++op;
+        
         ++ie;
+        return op++;
     }
 
 
@@ -160,7 +161,7 @@ public class CPU {
 
     
 
-    // Main method - loop through Code Segment in memeory and execute every insstruction
+    // Main method - recursive call instruction which pointed by cp register
     public void execute() {
         codeToInstructionTable.get(ram.data[cp]).execute();
         ++cp;
@@ -168,14 +169,18 @@ public class CPU {
         if (cp < op)
             execute();
     }
+    public void executeSingleOp() {
+        codeToInstructionTable.get(ram.data[cp]).execute();
+        ++cp;
+    }
 
     // Instructions
     private void debug() {
         Debugger debugger = new Debugger(this, ram);
-        debugger.start();
+        debugger.execute();
     }
 
-    public void halt() {
+    private void halt() {
         System.exit(0);
     }
 
