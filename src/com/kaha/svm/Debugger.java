@@ -26,7 +26,7 @@ class Debugger {
     private void dump() {
         System.out.printf("CP: 0x%08x\n", cpu.getCP());
         System.out.printf("OP: 0x%08x\tDP: 0x%08x\n", cpu.getOP(), cpu.getDP());
-        System.out.printf("RP: 0x%08x\tSP: 0x%08x\n", cpu.getRP(), cpu.getSP());
+        System.out.printf("SP: 0x%08x\tRP: 0x%08x\n", cpu.getSP(), cpu.getRP());
         System.out.printf("IE: 0%010d\n", cpu.getIE());
 
         int[] data = ram.getData();

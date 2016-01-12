@@ -15,6 +15,10 @@ class OPCODE {
         tmpMapIC.put("READI" , 0xA5);
         tmpMapIC.put("WRITEI", 0xA6);
         tmpMapIC.put("ADD"   , 0xC0);
+        tmpMapIC.put("SUB"   , 0xC1);
+        tmpMapIC.put("MUL"   , 0xC2);
+        tmpMapIC.put("DIV"   , 0xC3);
+        tmpMapIC.put("RND"   , 0xC7);
         tmpMapIC.put("DEBUG" , 0xEEEEEEEE);
         tmpMapIC.put("HALT"  , 0xFFFFFFFF);
 

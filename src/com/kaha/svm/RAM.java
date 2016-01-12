@@ -4,7 +4,7 @@ import java.util.Arrays;
 
 class RAM {
 	protected int[] data;
-	private static final int SIZE = 32;
+	private static final int SIZE = 256;
 
 	public RAM () { data = new int[SIZE]; }
 
