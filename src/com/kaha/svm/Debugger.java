@@ -62,6 +62,7 @@ class Debugger {
     private void exit() { cpu.halt(); }
 
     private void restart() {
+        cpu.flushRAM();
         cpu.execute();
     }
 

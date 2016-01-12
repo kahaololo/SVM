@@ -131,7 +131,6 @@ public class CPU {
     public int getIE() { return ie; }
 
     public void loadCode (int opcode) {
-        // flush memory
         ram.data[op] = opcode;
         ++op;
         ++ie;
@@ -144,10 +143,11 @@ public class CPU {
         }
         op = OP;
     }
-    private void flushRAM() {
+    public void flushRAM() {
         for (int i = op; i < ram.data.length ; i++) {
             ram.data[i] = 0x00;
         }
+        cp = CP;
         dp = DP;
         sp = SP;
         rp = RP;
@@ -162,10 +162,11 @@ public class CPU {
 
     // Main method - loop through Code Segment in memeory and execute every insstruction
     public void execute() {
-        flushRAM();
-        for (int i = 0; i < op; i++) {
-            codeToInstructionTable.get(ram.data[i]).execute();
-        }
+        codeToInstructionTable.get(ram.data[cp]).execute();
+        ++cp;
+
+        if (cp < op)
+            execute();
     }
 
     // Instructions
@@ -178,7 +179,7 @@ public class CPU {
         System.exit(0);
     }
 
-    public void nop() {
+    private void nop() {
         ++cp;
     }
 
