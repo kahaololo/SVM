@@ -2,7 +2,7 @@ package com.kaha.svm;
 
 import java.util.*;
 import java.lang.*;
-// import org.apache.commons.cli;
+import java.io.*;
 
 class Debugger {
 
@@ -12,12 +12,9 @@ class Debugger {
 
     private Scanner in;
 
-    // private Scanner reader;
-
     public Debugger(CPU cpu, RAM ram) {
         this.cpu = cpu;
         this.ram = ram;
-        // reader = new Scanner(System.in);
 
         System.out.println("** Welcome to Simple Virtual Machine **");
         System.out.println("** SVM is in the Debug Mode **\n");
@@ -29,18 +26,25 @@ class Debugger {
         System.out.printf("SP: 0x%08x\tRP: 0x%08x\n", cpu.getSP(), cpu.getRP());
         System.out.printf("IE: 0%010d\n", cpu.getIE());
 
+        System.out.println(getRamDump());
+
+        System.out.println();
+    }
+
+    private String getRamDump() {
         int[] data = ram.getData();
+        StringBuilder output = new StringBuilder();
 
         for (int i = 0; i < data.length; i++) {
             if (i % 8 == 0)
-                System.out.println();
+                output.append("\n");
             else
-                System.out.print(" ");
+                output.append(" ");
 
-            System.out.printf("%08x", data[i]);
+            output.append(String.format("%08x", data[i]));
         }
 
-        System.out.println();
+        return output.toString();
     }
 
     private void help() {
@@ -49,6 +53,7 @@ class Debugger {
         System.out.println("restart                 - restart execution cycle from the 0x00 position");
         System.out.println("step                    - execute single instruction execution cycle");
         System.out.println("dump                    - CPU and RAM dump");
+        System.out.println("store [filename]        - store RAM to the file");
         System.out.println("read ..                 - read values/mnemonics from console to memory starting from OP");
         System.out.println("erase [shift] [length]  - assigns new value to CP register");
         System.out.println("cp [xx]                 - assigns new value to CP register");
@@ -89,6 +94,22 @@ class Debugger {
         }
     }
 
+    private void store(String filename) {
+        String fullPath = FilePath.getTmpPath() + "\\" + filename + ".txt";
+        // System.out.println(fullPath);
+        try(FileOutputStream fos=new FileOutputStream(fullPath)) {
+            String str = getRamDump();
+            byte[] buffer = str.getBytes();
+             
+            fos.write(buffer, 0, buffer.length);
+        }
+        catch(IOException ex){
+            System.out.println(ex.getMessage());
+        }
+    }
+
+    
+
     private void eraseMemorySegment(int pos, int length) {
         // flush Code segment from 
         cpu.eraseMemorySegment(pos, length);
@@ -121,6 +142,8 @@ class Debugger {
             case "start": start();
                 break;
             case "restart": restart();
+                break;
+            case "store": store(args[0]);
                 break;
             case "step": step();
                 break;
@@ -157,5 +180,4 @@ class Debugger {
         System.out.print("\n>> ");
     }
     
-
 }

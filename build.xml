@@ -17,7 +17,11 @@
         <!-- <mkdir dir="${dist.dir}/${dist.name}/${dist.lib.dir}"/> -->
     </target>
 
-    <target name="make.jar" description="Make jar file" depends="compile,make.dist.dirs">
+    <target name="make.tmp.dirs" description="Make dirs for temporary files">
+        <mkdir dir="${tmp.dir}/"/>
+    </target>
+
+    <target name="make.jar" description="Make jar file" depends="compile,make.dist.dirs,make.tmp.dirs">
 
         <jar destfile="${dist.dir}/${dist.name}/${build.jar.name}">                                  
             <manifest>
