@@ -35,13 +35,15 @@ class Debugger {
         int[] data = ram.getData();
         StringBuilder output = new StringBuilder();
 
-        for (int i = 0; i < data.length; i++) {
-            if (i % 8 == 0)
+        for (int i = 0, j = 1; i < data.length; i++, j++) {
+            
+            output.append(String.format("%08x", data[i]));
+
+            if ( j % 8 == 0 && j != data.length )
                 output.append("\n");
             else
                 output.append(" ");
 
-            output.append(String.format("%08x", data[i]));
         }
 
         return output.toString();
@@ -53,6 +55,7 @@ class Debugger {
         System.out.println("restart                 - restart execution cycle from the 0x00 position");
         System.out.println("step                    - execute single instruction execution cycle");
         System.out.println("dump                    - CPU and RAM dump");
+        System.out.println("load [filename]         - loads ROM from the file");
         System.out.println("store [filename]        - store RAM to the file");
         System.out.println("read ..                 - read values/mnemonics from console to memory starting from OP");
         System.out.println("erase [shift] [length]  - assigns new value to CP register");
@@ -97,7 +100,7 @@ class Debugger {
     private void store(String filename) {
         String fullPath = FilePath.getTmpPath() + "\\" + filename + ".txt";
         // System.out.println(fullPath);
-        try(FileOutputStream fos=new FileOutputStream(fullPath)) {
+        try(FileOutputStream fos = new FileOutputStream(fullPath)) {
             String str = getRamDump();
             byte[] buffer = str.getBytes();
              
@@ -108,7 +111,29 @@ class Debugger {
         }
     }
 
-    
+    private void load(String filename) {
+        String fullPath = FilePath.getTmpPath() + "\\" + filename + ".txt";
+        // System.out.println(fullPath);
+        StringBuilder ramDump = new StringBuilder();
+
+        try(FileInputStream fis = new FileInputStream(fullPath)) {
+            int i = -1;
+            while( (i = fis.read()) !=- 1 )
+                ramDump.append( (char) i );
+            
+            String[] words = ramDump.toString().split("\\s+");
+
+            for (int j = 0; j < words.length; j++) {
+                ram.data[j] = (int) Long.parseLong(words[j], 16);
+            }
+
+        }
+        catch(IOException ex){
+            System.out.println(ex.getMessage());
+        }
+    }
+
+
 
     private void eraseMemorySegment(int pos, int length) {
         // flush Code segment from 
@@ -142,6 +167,8 @@ class Debugger {
             case "start": start();
                 break;
             case "restart": restart();
+                break;
+            case "load": load(args[0]);
                 break;
             case "store": store(args[0]);
                 break;
