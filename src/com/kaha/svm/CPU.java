@@ -28,79 +28,91 @@ public class CPU {
     private RAM ram;
 
     private Scanner in;
-    private DataStack dataStack = new DataStack();
+    private Stack dataStack,returnStack;
     
     // fill OPCODE to INSTRUCTION table
     {   
         // READ
         codeToInstructionTable.put(0xA3, new ExecuteOpCode() {
-            public void execute() {
+            public void callCode() {
                 read();
             }
         });
         // WRITE
         codeToInstructionTable.put(0xA4, new ExecuteOpCode() {
-            public void execute() {
+            public void callCode() {
                 write();
             }
         });
         // READI
         codeToInstructionTable.put(0xA5, new ExecuteOpCode() {
-            public void execute() {
+            public void callCode() {
                 readi();
             }
         });
         // WRITEI
         codeToInstructionTable.put(0xA6, new ExecuteOpCode() {
-            public void execute() {
+            public void callCode() {
                 writei();
             }
         });
         // ADD
         codeToInstructionTable.put(0xC0, new ExecuteOpCode() {
-            public void execute() {
+            public void callCode() {
                 add();
             }
         });
         // SUB
         codeToInstructionTable.put(0xC1, new ExecuteOpCode() {
-            public void execute() {
+            public void callCode() {
                 subtracts();
             }
         });
         // MUL
         codeToInstructionTable.put(0xC2, new ExecuteOpCode() {
-            public void execute() {
+            public void callCode() {
                 multiply();
             }
         });
         // DIV
         codeToInstructionTable.put(0xC3, new ExecuteOpCode() {
-            public void execute() {
+            public void callCode() {
                 divide();
             }
         });
         // RND
         codeToInstructionTable.put(0xC7, new ExecuteOpCode() {
-            public void execute() {
+            public void callCode() {
                 random();
             }
         });
         // NOP
         codeToInstructionTable.put(0x00, new ExecuteOpCode() {
-            public void execute() {
+            public void callCode() {
                 nop();
+            }
+        });
+        // CALL
+        codeToInstructionTable.put(0xE4, new ExecuteOpCode() {
+            public void callCode() {
+                call();
+            }
+        });
+        // RET
+        codeToInstructionTable.put(0xE5, new ExecuteOpCode() {
+            public void callCode() {
+                ret();
             }
         });
         // DEBUG
         codeToInstructionTable.put(0xEEEEEEEE, new ExecuteOpCode() {
-            public void execute() {
+            public void callCode() {
                 debug();
             }
         });
         // HALT
         codeToInstructionTable.put(0xFFFFFFFF, new ExecuteOpCode() {
-            public void execute() {
+            public void callCode() {
                 halt();
             }
         });
@@ -111,6 +123,9 @@ public class CPU {
 
         in = new Scanner(System.in);
         in.useDelimiter("\r\n");
+
+        dataStack = new Stack(sp);
+        returnStack = new Stack(rp);
     }
 
     public int getCP() { return cp; }
@@ -122,11 +137,11 @@ public class CPU {
     public int getDP() { return dp; }
     public void setDP(int value) { dp = value; }
 
-    public int getRP() { return rp; }
-    public void setRP(int value) { rp = value; }
+    public int getRP() { return returnStack.getPointer(); }
+    public void setRP(int value) { returnStack.setPointer(value); }
 
-    public int getSP() { return sp; }
-    public void setSP(int value) { sp = value; }
+    public int getSP() { return dataStack.getPointer(); }
+    public void setSP(int value) { dataStack.setPointer(value); }
 
     public int getIE() { return ie; }
 
@@ -148,10 +163,10 @@ public class CPU {
         for (int i = op; i < ram.data.length ; i++) {
             ram.data[i] = 0x00;
         }
-        cp = CP;
-        dp = DP;
-        sp = SP;
-        rp = RP;
+        setCP(CP);
+        setDP(DP);
+        setSP(SP);
+        setRP(RP);
     }
     public void eraseMemorySegment(int pos, int length) {
         for (int i = pos; i < pos + length ; i++) {
@@ -163,14 +178,14 @@ public class CPU {
 
     // Main method - recursive call instruction which pointed by cp register
     public void execute() {
-        codeToInstructionTable.get(ram.data[cp]).execute();
-        ++cp;
+        codeToInstructionTable.get(ram.data[cp]).callCode();
+        cp++;
 
         if (cp < op)
             execute();
     }
     public void executeSingleOp() {
-        codeToInstructionTable.get(ram.data[cp]).execute();
+        codeToInstructionTable.get(ram.data[cp]).callCode();
         ++cp;
     }
 
@@ -184,9 +199,24 @@ public class CPU {
         System.exit(0);
     }
 
-    private void nop() {
-        ++cp;
+    private void nop() {}
+
+    private void call() {
+        // get subroutine address from the top of Data Stack
+        int subPoint = dataStack.pop();
+        // store current cp+1 to return stack
+        returnStack.push(cp);
+        // shift cp to the begining of subroutine
+        cp = subPoint - 1;
+
     }
+    private void ret() {
+        // get the address from return stack
+        int returnPoint = returnStack.pop();
+        // shift cp to this address
+        cp = returnPoint;
+    }
+
 
     private void read() {
         char[] string = in.next().toCharArray();
@@ -254,20 +284,33 @@ public class CPU {
     // }
 
 
-    class DataStack {
-        void push(int value) {
-            // System.out.println("push " + value + " to " + sp + " pos");
-            ram.data[sp] = value;
-            ++sp;
+    public class Stack {
+        private int pointer;
+
+        public Stack(int pointer) {
+            this.pointer = pointer;
         }
-        int pop() {
+
+        public void push(int value) {
+            ram.data[pointer] = value;
+            ++pointer;
+        }
+
+        public int pop() {
             // unnececary operation, just for clear debug
-            ram.data[sp] = 0x00;
-            --sp;
-            return ram.data[sp];
+            ram.data[pointer] = 0x00;
+
+            --pointer;
+            return ram.data[pointer];
+        }
+
+        public int getPointer() {
+            return pointer;
+        }
+        public void setPointer(int i) {
+            pointer = i;
         }
     }
-
 
 
 

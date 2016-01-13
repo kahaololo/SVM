@@ -1,5 +1,5 @@
 package com.kaha.svm;
 
 public interface ExecuteOpCode {
-	public void execute(); 
+	public void callCode(); 
 }

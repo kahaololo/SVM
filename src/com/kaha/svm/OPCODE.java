@@ -19,6 +19,8 @@ class OPCODE {
         tmpMapIC.put("MUL"   , 0xC2);
         tmpMapIC.put("DIV"   , 0xC3);
         tmpMapIC.put("RND"   , 0xC7);
+        tmpMapIC.put("CALL"  , 0xE4);
+        tmpMapIC.put("RET"   , 0xE5);
         tmpMapIC.put("DEBUG" , 0xEEEEEEEE);
         tmpMapIC.put("HALT"  , 0xFFFFFFFF);
 
